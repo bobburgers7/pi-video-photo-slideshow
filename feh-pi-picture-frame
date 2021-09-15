@@ -1,0 +1,184 @@
+Use Raspbian w/ desktop image
+
+1. enable ssh
+place empty file named 'ssh' in boot.
+-> touch 'ssh'
+
+2.  install unattended upgrades
+https://raspberrypi.stackexchange.com/questions/72022/configuring-unattended-upgrades-on-raspbian-stretch
+
+https://unix.stackexchange.com/questions/273969/why-is-unattended-upgrades-not-sending-emails
+
+https://askubuntu.com/questions/326156/how-to-customize-unattended-upgrades-notification-emails
+
+sudo apt-get install mailutils unattended-upgrades -y
+
+run weekly
+https://unix.stackexchange.com/questions/342663/who-starts-unattended-upgrades
+
+to
+
+sudo nano /etc/apt/apt.conf.d/50unattended-upgrades
+add to
+Unattended-Upgrade::Origins-Pattern {
+
+"origin=Raspbian,codename=${distro_codename},label=Raspbian";
+"origin=Raspberry Pi Foundation,codename=${distro_codename},label=Raspberry Pi Foundation";
+"o=Syncthing";
+
+run sed
+
+sudo sed -i 's/^\/\/Unattended-Upgrade::Automatic-Reboot "false";/Unattended-Upgrade::Automatic-Reboot "true";/g' /etc/apt/apt.conf.d/50unattended-upgrades
+sudo sed -i 's/^\/\/Unattended-Upgrade::Automatic-Reboot-Time "02:00";/Unattended-Upgrade::Automatic-Reboot-Time "02:00";/g' /etc/apt/apt.conf.d/50unattended-upgrades
+sudo sed -i 's/^\/\/Unattended-Upgrade::Remove-Unused-Dependencies "false";/Unattended-Upgrade::Remove-Unused-Dependencies "true";/g' /etc/apt/apt.conf.d/50unattended-upgrades
+
+# You could also create this file by running "dpkg-reconfigure -plow unattended-upgrades"
+sudo tee /etc/apt/apt.conf.d/20auto-upgrades > /dev/null <<EOF
+APT::Periodic::Update-Package-Lists "1";
+APT::Periodic::Unattended-Upgrade "1";
+EOF
+
+
+check w/
+sudo unattended-upgrade -v -d --dry-run
+tail -n 4 /var/log/unattended-upgrades/unattended-upgrades.log
+
+2. update system
+sudo apt-get update && sudo apt-get dist-upgrade -y
+
+3. Install feh
+https://feh.finalrewind.org/
+
+First, install the dependencies:
+sudo apt-get install libcurl4-openssl-dev libx11-dev libxt-dev libimlib2-dev libxinerama-dev libjpeg-progs libpng-dev libexif-dev libexif12 libheif-dev libimlib2-dev libde265-dev -y
+
+check out the git version:
+git clone https://git.finalrewind.org/feh
+cd feh
+
+Now, compile and install feh:
+make -j4 curl=1 xinerama=1 verscmp=1 exif=1
+sudo make install
+
+4. enable HEIC support
+
+https://github.com/vi/imlib2-heic
+
+
+3. Setup Wireless
+
+https://core-electronics.com.au/tutorials/raspberry-pi-zerow-headless-wifi-setup.html
+https://wiki.brewpi.com/getting-started/raspberry-pi-docker-install
+https://raspberrypi.stackexchange.com/questions/67649/raspberry-pi-zero-w-headless-using-wpa-supplicant-conf-not-working
+https://www.raspberrycoulis.co.uk/hints-tips/raspberry-pi-multiple-wifi-networks/
+
+place wpa_supplicant.conf in boot with EOL in unix style
+
+country=US
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+
+
+
+4. Create directories
+mkdir -p /home/pi/photos-copy/ryan-photos-copy
+mkdir -p /home/pi/photos-copy/photosync-copy/
+mkdir -p /home/pi/photos-copy/david-janet-photos-copy
+
+5b. setup ssh-copy-id
+https://www.raspberrypi.org/documentation/remote-access/ssh/passwordless.md
+
+Copy your public key to your Raspberry Pi
+
+ssh-copy-id <USERNAME>@<IP-ADDRESS>
+
+6. Install Syncthing
+https://www.htpcguides.com/install-syncthing-raspberry-pi-bittorrent-sync-alternative/
+
+wget -O - https://syncthing.net/release-key.txt | sudo apt-key add -
+
+echo "deb http://apt.syncthing.net/ syncthing release" | sudo tee -a /etc/apt/sources.list.d/syncthing-release.list
+
+sudo apt-get update
+sudo apt-get install syncthing -y
+
+Create config files by running 'syncthing"
+Kill the syncthing process with Ctrl+C in the Terminal
+
+autostart syncthing
+sudo systemctl enable syncthing@pi.service
+
+create systemd thing
+
+https://forum.syncthing.net/t/pi-no-rtc-correct-syncthing-time-at-auto-start/14627
+
+
+
+go to webpage to setup everything else
+http://xxxxx:8384
+
+
+4. Setup .xsession / feh
+
+.xsession
+
+# disable screensaver
+xset s noblank
+xset s off
+xset -dpms
+
+# use PIR sensor to turn on/off display
+# /home/pi/pir-control.py &
+
+# start slideshow
+feh --auto-rotate -d -F -r -Z -z -R 3600 -D 30 photos-copy/
+
+
+https://www.splitbrain.org/blog/2018-05/12-diy_digital_picture_frame
+
+run raspi-config to adjust locales and boot into desktop (must auto-login) by default
+
+5. Setup HEIC support
+
+7. Setup turning monitor off/on
+ensure you get pirate vs pi correct
+
+9. Turn the monitor on and off automatically (optional)
+https://www.screenly.io/blog/2017/07/02/how-to-automatically-turn-off-and-on-your-monitor-from-your-raspberry-pi/
+
+https://raspberrypi.stackexchange.com/questions/52042/turning-tvservice-on-and-off-leaves-screen-blank
+
+*** https://gist.github.com/SirCrocker/937d06f8f2c1227a83802b9b77f60ba0
+vcgencmd  works. the other will turn off the monitor but wont show anything when turning it back on
+
+sudo apt-get install cec-utils -y
+
+To turn the monitor on/off on a daily schedule, grab this script and put it in /home/pi/rpi-hdmi.sh. Next, make it executable:
+
+chmod +x /home/pi/rpi-hdmi.sh
+Now we’ll need to add a cron entry to call this script at the desired time, so open the cron editor:
+
+crontab -e
+And add the following lines at the bottom of the file:
+
+# Turn HDMI Off (21:30)
+30 21 * * * /home/pi/rpi-hdmi.sh off >/dev/null 2>&1
+
+# Turn HDMI On (9:00/9:00am)
+0 9 * * * /home/pi/rpi-hdmi.sh on >/dev/null 2>&1
+
+# Turn HDMI On Sat/Sun @ (9am)
+0 9 * * 6,0 /home/pi/rpi-hdmi.sh on >/dev/null 2>&1
+
+# Turn HDMI On Mon-Fri @ (630pm)
+30 18 * * 1-5 /home/pi/rpi-hdmi.sh on >/dev/null 2>&1
+
+The  first number (0) is the minutes and the second number on each of those lines (22 and 7) is the hour in 24 hour time. So in this example, the monitor would turn off at 10:00pm and back on again at 7:00am. Adjust the time for your needs.
+
+Keep in mind: this does not turn the Raspberry Pi off! It just turns off the monitor, saving energy and hopefully extending the life of your monitor. The Raspberry Pi is still on and running however.
+
+
+
+
+
+apt-get update --allow-releaseinfo-change
