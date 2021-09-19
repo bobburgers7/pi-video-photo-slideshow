@@ -64,6 +64,9 @@ sudo make install
 
 https://github.com/vi/imlib2-heic
 
+git clone https://github.com/vi/imlib2-heic.git
+make
+sudo make install
 
 3. Setup Wireless
 
@@ -93,7 +96,7 @@ Copy your public key to your Raspberry Pi
 ssh-copy-id <USERNAME>@<IP-ADDRESS>
 
 6. Install Syncthing
-https://www.htpcguides.com/install-syncthing-raspberry-pi-bittorrent-sync-alternative/
+https://pimylifeup.com/raspberry-pi-syncthing/
 
 wget -O - https://syncthing.net/release-key.txt | sudo apt-key add -
 
@@ -149,6 +152,8 @@ https://www.screenly.io/blog/2017/07/02/how-to-automatically-turn-off-and-on-you
 https://raspberrypi.stackexchange.com/questions/52042/turning-tvservice-on-and-off-leaves-screen-blank
 
 *** https://gist.github.com/SirCrocker/937d06f8f2c1227a83802b9b77f60ba0
+
+wget https://gist.githubusercontent.com/SirCrocker/937d06f8f2c1227a83802b9b77f60ba0/raw/3f9c9558d7d15dfdb035e77bc6a77ad0d1abd5ea/rpi-hdmi-tv.sh
 vcgencmd  works. the other will turn off the monitor but wont show anything when turning it back on
 
 sudo apt-get install cec-utils -y
@@ -182,3 +187,13 @@ Keep in mind: this does not turn the Raspberry Pi off! It just turns off the mon
 
 
 apt-get update --allow-releaseinfo-change
+
+
+INSTALLING PICFRAME
+1. install requirements for pyheif
+
+https://github.com/pi3d/pi3d_demos/issues/24#issuecomment-871128566
+
+2. install pyheif
+
+pip3 install pyheif
