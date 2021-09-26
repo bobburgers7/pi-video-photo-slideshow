@@ -74,9 +74,7 @@ https://raspberrypi.stackexchange.com/questions/67649/raspberry-pi-zero-w-headle
 https://www.raspberrycoulis.co.uk/hints-tips/raspberry-pi-multiple-wifi-networks/
 
 4. Create directories
-mkdir -p /home/pi/photos-copy/ryan-photos-copy
-mkdir -p /home/pi/photos-copy/photosync-copy/
-mkdir -p /home/pi/photos-copy/david-janet-photos-copy
+mkdir -p /home/pi/photos-copy
 
 5b. setup ssh-copy-id
 Copy your public key to your Raspberry Pi
