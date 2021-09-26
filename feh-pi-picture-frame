@@ -1,22 +1,11 @@
-Use Raspbian w/ desktop image
+1. Install Raspberry Pi OS using Raspberry Pi Imager
+Use advanced options to enable ssh, wifi, etc.
 
-1. enable ssh
-place empty file named 'ssh' in boot.
--> touch 'ssh'
+https://www.raspberrypi.org/software/
+https://www.tomshardware.com/news/raspberry-pi-imager-now-comes-with-advanced-options
 
-2.  install unattended upgrades
-https://raspberrypi.stackexchange.com/questions/72022/configuring-unattended-upgrades-on-raspbian-stretch
-
-https://unix.stackexchange.com/questions/273969/why-is-unattended-upgrades-not-sending-emails
-
-https://askubuntu.com/questions/326156/how-to-customize-unattended-upgrades-notification-emails
-
+2. Install unattended upgrades
 sudo apt-get install mailutils unattended-upgrades -y
-
-run weekly
-https://unix.stackexchange.com/questions/342663/who-starts-unattended-upgrades
-
-to
 
 sudo nano /etc/apt/apt.conf.d/50unattended-upgrades
 add to
@@ -32,24 +21,27 @@ sudo sed -i 's/^\/\/Unattended-Upgrade::Automatic-Reboot "false";/Unattended-Upg
 sudo sed -i 's/^\/\/Unattended-Upgrade::Automatic-Reboot-Time "02:00";/Unattended-Upgrade::Automatic-Reboot-Time "02:00";/g' /etc/apt/apt.conf.d/50unattended-upgrades
 sudo sed -i 's/^\/\/Unattended-Upgrade::Remove-Unused-Dependencies "false";/Unattended-Upgrade::Remove-Unused-Dependencies "true";/g' /etc/apt/apt.conf.d/50unattended-upgrades
 
-# You could also create this file by running "dpkg-reconfigure -plow unattended-upgrades"
 sudo tee /etc/apt/apt.conf.d/20auto-upgrades > /dev/null <<EOF
 APT::Periodic::Update-Package-Lists "1";
 APT::Periodic::Unattended-Upgrade "1";
 EOF
 
+# You could also create this file by running "dpkg-reconfigure -plow unattended-upgrades"
 
 check w/
 sudo unattended-upgrade -v -d --dry-run
 tail -n 4 /var/log/unattended-upgrades/unattended-upgrades.log
 
+https://raspberrypi.stackexchange.com/questions/72022/configuring-unattended-upgrades-on-raspbian-stretch
+https://unix.stackexchange.com/questions/273969/why-is-unattended-upgrades-not-sending-emails
+https://askubuntu.com/questions/326156/how-to-customize-unattended-upgrades-notification-emails
+https://unix.stackexchange.com/questions/342663/who-starts-unattended-upgrades
+
 2. update system
 sudo apt-get update && sudo apt-get dist-upgrade -y
 
 3. Install feh
-https://feh.finalrewind.org/
-
-First, install the dependencies:
+install the dependencies:
 sudo apt-get install libcurl4-openssl-dev libx11-dev libxt-dev libimlib2-dev libxinerama-dev libjpeg-progs libpng-dev libexif-dev libexif12 libheif-dev libimlib2-dev libde265-dev -y
 
 check out the git version:
@@ -60,20 +52,15 @@ Now, compile and install feh:
 make -j4 curl=1 xinerama=1 verscmp=1 exif=1
 sudo make install
 
+https://feh.finalrewind.org/
 4. enable HEIC support
-
-https://github.com/vi/imlib2-heic
 
 git clone https://github.com/vi/imlib2-heic.git
 make
 sudo make install
 
+https://github.com/vi/imlib2-heic
 3. Setup Wireless
-
-https://core-electronics.com.au/tutorials/raspberry-pi-zerow-headless-wifi-setup.html
-https://wiki.brewpi.com/getting-started/raspberry-pi-docker-install
-https://raspberrypi.stackexchange.com/questions/67649/raspberry-pi-zero-w-headless-using-wpa-supplicant-conf-not-working
-https://www.raspberrycoulis.co.uk/hints-tips/raspberry-pi-multiple-wifi-networks/
 
 place wpa_supplicant.conf in boot with EOL in unix style
 
@@ -81,7 +68,10 @@ country=US
 ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
 update_config=1
 
-
+https://core-electronics.com.au/tutorials/raspberry-pi-zerow-headless-wifi-setup.html
+https://wiki.brewpi.com/getting-started/raspberry-pi-docker-install
+https://raspberrypi.stackexchange.com/questions/67649/raspberry-pi-zero-w-headless-using-wpa-supplicant-conf-not-working
+https://www.raspberrycoulis.co.uk/hints-tips/raspberry-pi-multiple-wifi-networks/
 
 4. Create directories
 mkdir -p /home/pi/photos-copy/ryan-photos-copy
@@ -89,37 +79,54 @@ mkdir -p /home/pi/photos-copy/photosync-copy/
 mkdir -p /home/pi/photos-copy/david-janet-photos-copy
 
 5b. setup ssh-copy-id
-https://www.raspberrypi.org/documentation/remote-access/ssh/passwordless.md
-
 Copy your public key to your Raspberry Pi
 
 ssh-copy-id <USERNAME>@<IP-ADDRESS>
 
+https://www.raspberrypi.org/documentation/remote-access/ssh/passwordless.md
+
 6. Install Syncthing
-https://pimylifeup.com/raspberry-pi-syncthing/
-
 wget -O - https://syncthing.net/release-key.txt | sudo apt-key add -
-
 echo "deb http://apt.syncthing.net/ syncthing release" | sudo tee -a /etc/apt/sources.list.d/syncthing-release.list
-
 sudo apt-get update
 sudo apt-get install syncthing -y
 
 Create config files by running 'syncthing"
-Kill the syncthing process with Ctrl+C in the Terminal
+then Kill the syncthing process with Ctrl+C in the Terminal
+
+create systemd entry (look @ pimylifeup)
+sudo nano /lib/systemd/system/syncthing.service
+
+[Unit]
+Description=Syncthing - Open Source Continuous File Synchronization
+Documentation=man:syncthing(1)
+After=network.target
+
+[Service]
+User=pi
+ExecStart=/usr/bin/syncthing -no-browser -no-restart -logflags=0
+Restart=on-failure
+RestartSec=5
+SuccessExitStatus=3 4
+RestartForceExitStatus=3 4
+
+# Hardening
+ProtectSystem=full
+PrivateTmp=true
+SystemCallArchitectures=native
+MemoryDenyWriteExecute=true
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target
 
 autostart syncthing
 sudo systemctl enable syncthing@pi.service
 
-create systemd thing
-
-https://forum.syncthing.net/t/pi-no-rtc-correct-syncthing-time-at-auto-start/14627
-
-
-
 go to webpage to setup everything else
 http://xxxxx:8384
 
+https://pimylifeup.com/raspberry-pi-syncthing/
 
 4. Setup .xsession / feh
 
@@ -136,34 +143,24 @@ xset -dpms
 # start slideshow
 feh --auto-rotate -d -F -r -Z -z -R 3600 -D 30 photos-copy/
 
-
 https://www.splitbrain.org/blog/2018-05/12-diy_digital_picture_frame
 
 run raspi-config to adjust locales and boot into desktop (must auto-login) by default
 
-5. Setup HEIC support
-
-7. Setup turning monitor off/on
-ensure you get pirate vs pi correct
-
-9. Turn the monitor on and off automatically (optional)
-https://www.screenly.io/blog/2017/07/02/how-to-automatically-turn-off-and-on-your-monitor-from-your-raspberry-pi/
-
-https://raspberrypi.stackexchange.com/questions/52042/turning-tvservice-on-and-off-leaves-screen-blank
-
-*** https://gist.github.com/SirCrocker/937d06f8f2c1227a83802b9b77f60ba0
+5. Turn the monitor on and off automatically (optional)
 
 wget https://gist.githubusercontent.com/SirCrocker/937d06f8f2c1227a83802b9b77f60ba0/raw/3f9c9558d7d15dfdb035e77bc6a77ad0d1abd5ea/rpi-hdmi-tv.sh
-vcgencmd  works. the other will turn off the monitor but wont show anything when turning it back on
 
 sudo apt-get install cec-utils -y
 
 To turn the monitor on/off on a daily schedule, grab this script and put it in /home/pi/rpi-hdmi.sh. Next, make it executable:
 
-chmod +x /home/pi/rpi-hdmi.sh
-Now we’ll need to add a cron entry to call this script at the desired time, so open the cron editor:
+chmod +x /home/pi/rpi-hdmi-tv.sh
+
+Add a cron entry to call this script at the desired time
 
 crontab -e
+
 And add the following lines at the bottom of the file:
 
 # Turn HDMI Off (21:30)
@@ -172,28 +169,9 @@ And add the following lines at the bottom of the file:
 # Turn HDMI On (9:00/9:00am)
 0 9 * * * /home/pi/rpi-hdmi.sh on >/dev/null 2>&1
 
-# Turn HDMI On Sat/Sun @ (9am)
-0 9 * * 6,0 /home/pi/rpi-hdmi.sh on >/dev/null 2>&1
+vcgencmd  works. the other will turn off the monitor but wont show anything when turning it back on
 
-# Turn HDMI On Mon-Fri @ (630pm)
-30 18 * * 1-5 /home/pi/rpi-hdmi.sh on >/dev/null 2>&1
-
-The  first number (0) is the minutes and the second number on each of those lines (22 and 7) is the hour in 24 hour time. So in this example, the monitor would turn off at 10:00pm and back on again at 7:00am. Adjust the time for your needs.
-
-Keep in mind: this does not turn the Raspberry Pi off! It just turns off the monitor, saving energy and hopefully extending the life of your monitor. The Raspberry Pi is still on and running however.
-
-
-
-
+https://www.screenly.io/blog/2017/07/02/how-to-automatically-turn-off-and-on-your-monitor-from-your-raspberry-pi/
+https://raspberrypi.stackexchange.com/questions/52042/turning-tvservice-on-and-off-leaves-screen-blank
 
 apt-get update --allow-releaseinfo-change
-
-
-INSTALLING PICFRAME
-1. install requirements for pyheif
-
-https://github.com/pi3d/pi3d_demos/issues/24#issuecomment-871128566
-
-2. install pyheif
-
-pip3 install pyheif
