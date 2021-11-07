@@ -28,14 +28,13 @@ You can run VLC from the command line and use the framebuffer instead of X11 to 
      how to update the playlist automatically with any new files added via sync-thing?  feh used to be able to refresh the list.  consider just rebooting the pi after it goes through all the files?
      
 - Used to use feh but had to compile HEIC support for iphone photos and didn't have video support so swapped to VLC
-https://www.splitbrain.org/blog/2018-05/12-diy_digital_picture_frame
 
 Similar Projects:
-https://www.instructables.com/Easy-Raspberry-Pi-Based-ScreensaverSlideshow-for-E/
-https://www.binaryemotions.com
-
+* https://www.instructables.com/Easy-Raspberry-Pi-Based-ScreensaverSlideshow-for-E/
+* https://www.binaryemotions.com
 
 References:
+* https://www.splitbrain.org/blog/2018-05/12-diy_digital_picture_frame
 * https://www.vlchelp.com/image-slideshow-photo-view/
 * https://raspberrypi.stackexchange.com/questions/127252/problem-using-vlc-without-x
 * https://raspberrypi.stackexchange.com/questions/44169/run-something-after-login
