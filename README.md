@@ -17,8 +17,8 @@ You can run VLC from the command line and use the framebuffer instead of X11 to 
           # Turn HDMI On (9:00/9:00am)
           0 9 * * * /home/pi/rpi-hdmi.sh on
 
-6. folder shared with remote location is used as the video + picture location that default.xspf is pointed at.
-7. cannot run VLC as root, so run it as a user.
+6. create a playlist (default.xspf) that is pointed at the folder shared with remote location
+7. cannot run VLC as root, so run it as a user in crontab
         
           @reboot cvlc --image-duration=30 --no-osd --no-repeat -fLZ /home/pi/default.xspf vlc://quit
           
@@ -34,11 +34,12 @@ Similar Projects:
 https://www.instructables.com/Easy-Raspberry-Pi-Based-ScreensaverSlideshow-for-E/
 https://www.binaryemotions.com
 
+
 References:
-https://www.vlchelp.com/image-slideshow-photo-view/
-https://raspberrypi.stackexchange.com/questions/127252/problem-using-vlc-without-x
-https://raspberrypi.stackexchange.com/questions/44169/run-something-after-login
-http://www.wumpus-cave.net/2013/11/06/running-vlc-automatically-on-a-headless-raspberry-pi/
-https://www.matthewhollander.com/play-video-on-startup-of-raspbian-on-raspberry-pi/
-https://raspberrypi.stackexchange.com/questions/105450/display-a-video-at-boot
-https://raspberrypi.stackexchange.com/questions/59898/how-can-i-blank-the-screen-from-the-command-line-over-ssh
+* https://www.vlchelp.com/image-slideshow-photo-view/
+* https://raspberrypi.stackexchange.com/questions/127252/problem-using-vlc-without-x
+* https://raspberrypi.stackexchange.com/questions/44169/run-something-after-login
+* http://www.wumpus-cave.net/2013/11/06/running-vlc-automatically-on-a-headless-raspberry-pi/
+* https://www.matthewhollander.com/play-video-on-startup-of-raspbian-on-raspberry-pi/
+* https://raspberrypi.stackexchange.com/questions/105450/display-a-video-at-boot
+* https://raspberrypi.stackexchange.com/questions/59898/how-can-i-blank-the-screen-from-the-command-line-over-ssh
