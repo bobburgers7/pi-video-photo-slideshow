@@ -41,5 +41,4 @@ https://raspberrypi.stackexchange.com/questions/44169/run-something-after-login
 http://www.wumpus-cave.net/2013/11/06/running-vlc-automatically-on-a-headless-raspberry-pi/
 https://www.matthewhollander.com/play-video-on-startup-of-raspbian-on-raspberry-pi/
 https://raspberrypi.stackexchange.com/questions/105450/display-a-video-at-boot
-https://raspberrypi.stackexchange.com/questions/105450/display-a-video-at-boot?newreg=234d44764fc04de98d2f090714c6c231
 https://raspberrypi.stackexchange.com/questions/59898/how-can-i-blank-the-screen-from-the-command-line-over-ssh
