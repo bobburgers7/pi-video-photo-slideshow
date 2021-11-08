@@ -7,7 +7,7 @@ You can run VLC from the command line and use the framebuffer instead of X11 to 
 1. Install Raspberry Pi OS Lite
 2. apt-get install vlc-bin and vlc-plugin-base
 3. create a directory containing your media
-4. Create a playlist [default.xspf](default.xspf) that lists your media folder as the only directory
+4. Create a playlist [default.xspf](default.xspf) that lists your media folder as the only entry
 5. Add a line in crontab running VLC.  FYI You cannot run VLC as root.
        
           @reboot cvlc --random --play-and-exit /home/pi/default.xspf
@@ -16,7 +16,7 @@ You can run VLC from the command line and use the framebuffer instead of X11 to 
           #@reboot sleep 15 && clear && cvlc --image-duration=30 --recursive expand --no-osd --no-repeat -fLZ /home/pi/default.xspf vlc://quit
 
 fancy stuff
-* Consider using sync-thing so you can auto-upload new photos into your media directory on the pi
+* Consider using [syncthing](https://syncthing.net) to auto-upload new photos into your media directory on the pi
 * Consider turning the monitor off and on @ specified intervals
      https://gist.github.com/bobburgers7/31d98bcb43157b8cb73d456b066e7751
      
