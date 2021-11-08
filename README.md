@@ -31,7 +31,7 @@ fancy stuff
 - TODO
      how to update the playlist automatically with any new files added via sync-thing?  feh used to be able to refresh the list.  consider just rebooting the pi after it goes through all the files?
      
-- Used to use feh but had to compile HEIC support for iphone photos and didn't have video support so swapped to VLC
+- [Used to use feh for the digital photo frame](feh-pi-picture-frame) but couldn't do video and had to compile HEIC support for iphone photos.
 
 Similar Projects:
 * https://www.instructables.com/Easy-Raspberry-Pi-Based-ScreensaverSlideshow-for-E/
