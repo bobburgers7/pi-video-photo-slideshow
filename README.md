@@ -20,10 +20,11 @@ You can run VLC from the command line and use the framebuffer instead of X11 to 
 6. create a playlist (default.xspf) that is pointed at the folder shared with remote location
 7. cannot run VLC as root, so run it as a user in crontab
        
-          @reboot sleep 15 && clear && cvlc --image-duration=30 --recursive expand --no-osd --no-repeat -fLZ /home/pi/default.xspf vlc://quit
-          
+          @reboot cvlc --random --play-and-exit /home/pi/default.xspf
           #--image-duration - change how long each photo displays without having to go into the graphical interface to change settings
           #@reboot cvlc --fbdev /dev/fb0 --image-duration=30 --no-osd --no-repeat -fLZ /home/pi/default.xspf vlc://quit
+          #@reboot sleep 15 && clear && cvlc --image-duration=30 --recursive expand --no-osd --no-repeat -fLZ /home/pi/default.xspf vlc://quit
+
 
 - TODO
      how to update the playlist automatically with any new files added via sync-thing?  feh used to be able to refresh the list.  consider just rebooting the pi after it goes through all the files?
