@@ -5,7 +5,7 @@ https://www.raspberrypi.org/software/
 https://www.tomshardware.com/news/raspberry-pi-imager-now-comes-with-advanced-options
 
 2. Install unattended upgrades
-sudo apt-get install mailutils unattended-upgrades -y
+sudo apt install unattended-upgrades -y
 
 sudo nano /etc/apt/apt.conf.d/50unattended-upgrades
 add to
@@ -38,11 +38,11 @@ https://askubuntu.com/questions/326156/how-to-customize-unattended-upgrades-noti
 https://unix.stackexchange.com/questions/342663/who-starts-unattended-upgrades
 
 2. update system
-sudo apt-get update && sudo apt-get dist-upgrade -y
+sudo apt update && sudo apt dist-upgrade -y
 
 3. Install feh
 install the dependencies:
-sudo apt-get install libcurl4-openssl-dev libx11-dev libxt-dev libimlib2-dev libxinerama-dev libjpeg-progs libpng-dev libexif-dev libexif12 libheif-dev libimlib2-dev libde265-dev -y
+sudo apt install libcurl4-openssl-dev libx11-dev libxt-dev libimlib2-dev libxinerama-dev libjpeg-progs libexif-dev libheif-dev libimlib2-dev libde265-dev -y
 
 check out the git version:
 git clone https://git.finalrewind.org/feh
@@ -86,8 +86,8 @@ https://www.raspberrypi.org/documentation/remote-access/ssh/passwordless.md
 6. Install Syncthing
 wget -O - https://syncthing.net/release-key.txt | sudo apt-key add -
 echo "deb http://apt.syncthing.net/ syncthing release" | sudo tee -a /etc/apt/sources.list.d/syncthing-release.list
-sudo apt-get update
-sudo apt-get install syncthing -y
+sudo apt update
+sudo apt install syncthing -y
 
 Create config files by running 'syncthing"
 then Kill the syncthing process with Ctrl+C in the Terminal
